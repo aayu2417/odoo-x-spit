@@ -2,6 +2,8 @@
 
 A comprehensive, multi-tenant inventory management system built with Next.js, TypeScript, and MongoDB. This system allows organizations to manage their inventory, track stock movements, handle receipts and deliveries, and maintain a complete audit trail.
 
+Video link explaining the code and its features: https://drive.google.com/drive/folders/1wKHD3uaLLvi5IZFzu105Jlejv2smUWGF?usp=sharing
+
 ## Features
 
 - **Multi-Tenant Architecture**: Organizations and their employees can access shared data within their organization
