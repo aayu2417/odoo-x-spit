@@ -1,1 +1,20 @@
-node_modules/
+# Dependencies
+/node_modules
+
+# Next.js build output
+/.next
+/out
+
+# Production build
+/build
+
+# Environment variables (Security risk if committed!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# System files
+.DS_Store
+*.log
