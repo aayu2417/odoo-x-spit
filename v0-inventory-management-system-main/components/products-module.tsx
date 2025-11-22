@@ -36,11 +36,19 @@ export default function ProductsModule() {
   const fetchProducts = async () => {
     try {
       setLoading(true)
-      const res = await fetch("/api/products")
-      const data = await res.json()
-      setProducts(data)
+      const { apiFetch } = await import("@/lib/api-helpers")
+      const res = await apiFetch("/api/products")
+      if (res.ok) {
+        const data = await res.json()
+        // Ensure data is an array
+        setProducts(Array.isArray(data) ? data : [])
+      } else {
+        console.error("Failed to fetch products:", res.statusText)
+        setProducts([])
+      }
     } catch (error) {
       console.error("Failed to fetch products:", error)
+      setProducts([])
     } finally {
       setLoading(false)
     }
@@ -66,10 +74,17 @@ export default function ProductsModule() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      const { apiFetch } = await import("@/lib/api-helpers")
       if (editingId) {
-        await fetch(`/api/products/${editingId}`, { method: "PUT", body: JSON.stringify(formData) })
+        await apiFetch(`/api/products/${editingId}`, {
+          method: "PUT",
+          body: JSON.stringify(formData),
+        })
       } else {
-        await fetch("/api/products", { method: "POST", body: JSON.stringify(formData) })
+        await apiFetch("/api/products", {
+          method: "POST",
+          body: JSON.stringify(formData),
+        })
       }
       setIsDialogOpen(false)
       fetchProducts()
@@ -81,7 +96,8 @@ export default function ProductsModule() {
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure?")) {
       try {
-        await fetch(`/api/products/${id}`, { method: "DELETE" })
+        const { apiFetch } = await import("@/lib/api-helpers")
+        await apiFetch(`/api/products/${id}`, { method: "DELETE" })
         fetchProducts()
       } catch (error) {
         console.error("Failed to delete product:", error)

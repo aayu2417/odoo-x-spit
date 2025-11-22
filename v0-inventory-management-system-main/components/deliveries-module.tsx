@@ -1,128 +1,176 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, CheckCircle, Download, FileText, Trash2, Loader2 } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Plus,
+  CheckCircle,
+  Download,
+  FileText,
+  Trash2,
+  Loader2,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface Delivery {
-  id: string
-  customer: string
-  date: string
-  items: { productId: string; quantity: number }[]
-  status: "Draft" | "Ready" | "Completed"
-  total: number
+  id: string;
+  customer: string;
+  date: string;
+  items: { productId: string; quantity: number }[];
+  status: "Draft" | "Ready" | "Completed";
+  total: number;
 }
 
 export default function DeliveriesModule() {
-  const [deliveries, setDeliveries] = useState<Delivery[]>([])
-  const [loading, setLoading] = useState(true)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ customer: "", date: "", total: 0 })
+  const [deliveries, setDeliveries] = useState<Delivery[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    customer: "",
+    date: "",
+    total: 0,
+  });
 
   useEffect(() => {
-    fetchDeliveries()
-  }, [])
+    fetchDeliveries();
+  }, []);
 
   const fetchDeliveries = async () => {
     try {
-      setLoading(true)
-      const res = await fetch("/api/deliveries")
-      const data = await res.json()
-      setDeliveries(data)
+      setLoading(true);
+      const { apiFetch } = await import("@/lib/api-helpers");
+      const res = await apiFetch("/api/deliveries");
+      if (res.ok) {
+        const data = await res.json();
+        // Ensure data is an array
+        setDeliveries(Array.isArray(data) ? data : []);
+      } else {
+        console.error("Failed to fetch deliveries:", res.statusText);
+        setDeliveries([]);
+      }
     } catch (error) {
-      console.error("Failed to fetch deliveries:", error)
+      console.error("Failed to fetch deliveries:", error);
+      setDeliveries([]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleOpenDialog = (delivery?: Delivery) => {
     if (delivery) {
-      setEditingId(delivery.id)
-      setFormData({ customer: delivery.customer, date: delivery.date, total: delivery.total })
+      setEditingId(delivery.id);
+      setFormData({
+        customer: delivery.customer,
+        date: delivery.date,
+        total: delivery.total,
+      });
     } else {
-      setEditingId(null)
-      setFormData({ customer: "", date: new Date().toISOString().split("T")[0], total: 0 })
+      setEditingId(null);
+      setFormData({
+        customer: "",
+        date: new Date().toISOString().split("T")[0],
+        total: 0,
+      });
     }
-    setIsDialogOpen(true)
-  }
+    setIsDialogOpen(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
+      const { apiFetch } = await import("@/lib/api-helpers");
       if (editingId) {
-        await fetch(`/api/deliveries/${editingId}`, { method: "PUT", body: JSON.stringify(formData) })
+        await apiFetch(`/api/deliveries/${editingId}`, {
+          method: "PUT",
+          body: JSON.stringify(formData),
+        });
       } else {
-        await fetch("/api/deliveries", {
+        await apiFetch("/api/deliveries", {
           method: "POST",
           body: JSON.stringify({ ...formData, items: [], status: "Draft" }),
-        })
+        });
       }
-      setIsDialogOpen(false)
-      fetchDeliveries()
+      setIsDialogOpen(false);
+      fetchDeliveries();
     } catch (error) {
-      console.error("Failed to save delivery:", error)
+      console.error("Failed to save delivery:", error);
     }
-  }
+  };
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure?")) {
       try {
-        await fetch(`/api/deliveries/${id}`, { method: "DELETE" })
-        fetchDeliveries()
+        const { apiFetch } = await import("@/lib/api-helpers");
+        await apiFetch(`/api/deliveries/${id}`, { method: "DELETE" });
+        fetchDeliveries();
       } catch (error) {
-        console.error("Failed to delete delivery:", error)
+        console.error("Failed to delete delivery:", error);
       }
     }
-  }
+  };
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
-      await fetch(`/api/deliveries/${id}`, { method: "PUT", body: JSON.stringify({ status: newStatus }) })
-      fetchDeliveries()
+      const { apiFetch } = await import("@/lib/api-helpers");
+      await apiFetch(`/api/deliveries/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ status: newStatus }),
+      });
+      fetchDeliveries();
     } catch (error) {
-      console.error("Failed to update delivery status:", error)
+      console.error("Failed to update delivery status:", error);
     }
-  }
+  };
 
   const statusColors = {
     Draft: "bg-muted text-muted-foreground",
     Ready: "bg-accent/20 text-accent",
     Completed: "bg-primary/20 text-primary",
-  }
+  };
 
   const exportToPDF = (delivery: Delivery) => {
-    const element = document.createElement("div")
+    const element = document.createElement("div");
     element.innerHTML = `
       <h1>Delivery Order #${delivery.id}</h1>
       <p>Customer: ${delivery.customer}</p>
       <p>Date: ${delivery.date}</p>
       <p>Total: ${delivery.total}</p>
       <p>Status: ${delivery.status}</p>
-    `
-    const printWindow = window.open("", "", "height=400,width=600")
-    printWindow?.document.write(element.innerHTML)
-    printWindow?.document.close()
-    printWindow?.print()
-  }
+    `;
+    const printWindow = window.open("", "", "height=400,width=600");
+    printWindow?.document.write(element.innerHTML);
+    printWindow?.document.close();
+    printWindow?.print();
+  };
 
   const exportToExcel = (delivery: Delivery) => {
-    const csv = `Delivery ID,Customer,Date,Total,Status\n${delivery.id},${delivery.customer},${delivery.date},${delivery.total},${delivery.status}`
-    const blob = new Blob([csv], { type: "text/csv" })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `delivery-${delivery.id}.csv`
-    a.click()
-  }
+    const csv = `Delivery ID,Customer,Date,Total,Status\n${delivery.id},${delivery.customer},${delivery.date},${delivery.total},${delivery.status}`;
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `delivery-${delivery.id}.csv`;
+    a.click();
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -161,7 +209,11 @@ export default function DeliveriesModule() {
                     <TableCell>{delivery.total.toLocaleString()}</TableCell>
                     <TableCell>
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[delivery.status as keyof typeof statusColors]}`}
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          statusColors[
+                            delivery.status as keyof typeof statusColors
+                          ]
+                        }`}
                       >
                         {delivery.status}
                       </span>
@@ -172,15 +224,25 @@ export default function DeliveriesModule() {
                           variant="ghost"
                           size="sm"
                           className="text-primary"
-                          onClick={() => handleStatusChange(delivery.id, "Completed")}
+                          onClick={() =>
+                            handleStatusChange(delivery.id, "Completed")
+                          }
                         >
                           <CheckCircle className="w-4 h-4" />
                         </Button>
                       )}
-                      <Button variant="ghost" size="sm" onClick={() => exportToPDF(delivery)}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => exportToPDF(delivery)}
+                      >
                         <FileText className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => exportToExcel(delivery)}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => exportToExcel(delivery)}
+                      >
                         <Download className="w-4 h-4" />
                       </Button>
                       <Button
@@ -203,7 +265,9 @@ export default function DeliveriesModule() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editingId ? "Edit Delivery" : "Create New Delivery"}</DialogTitle>
+            <DialogTitle>
+              {editingId ? "Edit Delivery" : "Create New Delivery"}
+            </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -211,7 +275,9 @@ export default function DeliveriesModule() {
               <Input
                 id="customer"
                 value={formData.customer}
-                onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, customer: e.target.value })
+                }
                 placeholder="Enter customer name"
                 required
               />
@@ -222,7 +288,9 @@ export default function DeliveriesModule() {
                 id="date"
                 type="date"
                 value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, date: e.target.value })
+                }
                 required
               />
             </div>
@@ -232,7 +300,12 @@ export default function DeliveriesModule() {
                 id="total"
                 type="number"
                 value={formData.total}
-                onChange={(e) => setFormData({ ...formData, total: Number.parseFloat(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    total: Number.parseFloat(e.target.value) || 0,
+                  })
+                }
                 placeholder="Enter total amount"
                 required
               />
@@ -244,5 +317,5 @@ export default function DeliveriesModule() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

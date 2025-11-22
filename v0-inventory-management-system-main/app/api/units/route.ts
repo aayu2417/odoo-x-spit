@@ -8,10 +8,10 @@ export async function GET(request: Request) {
       return Response.json({ error: "Organization ID required" }, { status: 401 })
     }
 
-    const products = await db.products.getAll(organizationId)
-    return Response.json(Array.isArray(products) ? products : [])
+    const units = await db.units.getAll(organizationId)
+    return Response.json(Array.isArray(units) ? units : [])
   } catch (error) {
-    console.error("Products fetch error:", error)
+    console.error("Units fetch error:", error)
     return Response.json([])
   }
 }
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const product = await db.products.create({
+    const unit = await db.units.create({
       ...body,
       organizationId,
     })
@@ -37,16 +37,17 @@ export async function POST(request: Request) {
         organizationId,
         action: "CREATE",
         userId,
-        documentType: "Product",
-        documentId: product.id,
-        changes: { name: product.name, sku: product.sku },
+        documentType: "Unit",
+        documentId: unit.id,
+        changes: { name: unit.name, code: unit.code },
         timestamp: new Date().toISOString(),
       })
     }
 
-    return Response.json(product, { status: 201 })
+    return Response.json(unit, { status: 201 })
   } catch (error) {
-    console.error("Product create error:", error)
-    return Response.json({ error: "Failed to create product" }, { status: 500 })
+    console.error("Unit create error:", error)
+    return Response.json({ error: "Failed to create unit" }, { status: 500 })
   }
 }
+

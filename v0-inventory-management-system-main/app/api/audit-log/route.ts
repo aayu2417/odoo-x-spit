@@ -1,71 +1,62 @@
+import { db } from "@/lib/db"
+import { getOrganizationIdFromRequest, getUserIdFromRequest } from "@/lib/api-helpers"
+
 export async function POST(request: Request) {
   try {
-    const { action, userId, documentType, documentId, changes, timestamp } = await request.json()
+    const organizationId = getOrganizationIdFromRequest(request)
+    const userId = getUserIdFromRequest(request)
+    
+    if (!organizationId) {
+      return Response.json({ error: "Organization ID required" }, { status: 401 })
+    }
 
-    // In production, save to database
-    const auditLog = {
-      id: `audit-${Date.now()}`,
+    const { action, documentType, documentId, changes, timestamp } = await request.json()
+
+    const auditLog = await db.auditLogs.create({
+      organizationId,
       action,
-      userId,
+      userId: userId || "system",
       documentType,
       documentId,
       changes,
       timestamp: timestamp || new Date().toISOString(),
       ipAddress: request.headers.get("x-forwarded-for") || "unknown",
-    }
-
-    console.log("[AUDIT LOG]", auditLog)
+    })
 
     return Response.json({
       success: true,
       logId: auditLog.id,
     })
   } catch (error) {
+    console.error("Audit log error:", error)
     return Response.json({ error: "Failed to log audit" }, { status: 500 })
   }
 }
 
 export async function GET(request: Request) {
   try {
+    const organizationId = getOrganizationIdFromRequest(request)
+    if (!organizationId) {
+      return Response.json({ error: "Organization ID required" }, { status: 401 })
+    }
+
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get("userId")
     const documentType = searchParams.get("documentType")
     const startDate = searchParams.get("startDate")
     const endDate = searchParams.get("endDate")
 
-    // Demo data - in production, fetch from database with filters
-    const auditLogs = [
-      {
-        id: "audit-1",
-        action: "CREATE",
-        userId: "user-1",
-        documentType: "Receipt",
-        documentId: "RCP-1",
-        changes: { supplier: "ABC Supplies", total: 50000 },
-        timestamp: "2025-11-22T10:30:00Z",
-      },
-      {
-        id: "audit-2",
-        action: "UPDATE",
-        userId: "user-1",
-        documentType: "Receipt",
-        documentId: "RCP-1",
-        changes: { status: "Draft → Validated" },
-        timestamp: "2025-11-22T11:00:00Z",
-      },
-      {
-        id: "audit-3",
-        action: "VALIDATE",
-        userId: "user-1",
-        documentType: "Delivery",
-        documentId: "DEL-2",
-        changes: { status: "Ready → Completed" },
-        timestamp: "2025-11-21T14:30:00Z",
-      },
-    ]
+    const filters: any = {}
+    if (userId) filters.userId = userId
+    if (documentType) filters.documentType = documentType
+    if (startDate) filters.startDate = startDate
+    if (endDate) filters.endDate = endDate
+
+    const auditLogs = await db.auditLogs.getAll(organizationId, filters)
 
     return Response.json(auditLogs)
   } catch (error) {
+    console.error("Audit log fetch error:", error)
     return Response.json({ error: "Failed to fetch audit logs" }, { status: 500 })
   }
 }

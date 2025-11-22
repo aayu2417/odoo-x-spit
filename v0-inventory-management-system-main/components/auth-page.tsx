@@ -8,16 +8,21 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Database } from "lucide-react"
+import { setSession } from "@/lib/session"
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [userName, setUserName] = useState("")
+  const [organizationName, setOrganizationName] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError("")
 
     try {
       const response = await fetch("/api/auth", {
@@ -27,17 +32,40 @@ export default function AuthPage() {
           email,
           password,
           mode: isLogin ? "login" : "signup",
+          userName: isLogin ? undefined : userName,
+          organizationName: isLogin ? undefined : organizationName,
         }),
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        localStorage.setItem("userId", data.userId)
-        localStorage.setItem("email", data.email)
-        window.location.href = "/dashboard"
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        if (isLogin) {
+          // Login - redirect to dashboard
+          setSession({
+            userId: data.userId,
+            email: data.email,
+            name: data.name,
+            organizationId: data.organizationId,
+            role: data.role,
+          })
+          window.location.href = "/dashboard"
+        } else {
+          // Signup - redirect to login page
+          setError("")
+          setIsLogin(true)
+          setEmail("")
+          setPassword("")
+          setUserName("")
+          setOrganizationName("")
+          alert("Account created successfully! Please sign in.")
+        }
+      } else {
+        setError(data.error || "Authentication failed")
       }
     } catch (error) {
       console.error("Auth error:", error)
+      setError("Network error. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -52,7 +80,40 @@ export default function AuthPage() {
             <h1 className="text-2xl font-bold text-primary">StockMaster</h1>
           </div>
 
+          {error && (
+            <div className="mb-4 p-3 bg-destructive/10 text-destructive rounded-md text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && (
+              <>
+                <div>
+                  <Label htmlFor="organizationName">Organization Name</Label>
+                  <Input
+                    id="organizationName"
+                    type="text"
+                    placeholder="My Company"
+                    value={organizationName}
+                    onChange={(e) => setOrganizationName(e.target.value)}
+                    required={!isLogin}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="userName">Your Name</Label>
+                  <Input
+                    id="userName"
+                    type="text"
+                    placeholder="John Doe"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    required={!isLogin}
+                  />
+                </div>
+              </>
+            )}
+
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
@@ -84,17 +145,14 @@ export default function AuthPage() {
 
           <div className="mt-4 text-center">
             <button
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => {
+                setIsLogin(!isLogin)
+                setError("")
+              }}
               className="text-sm text-muted-foreground hover:text-foreground transition"
             >
               {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
             </button>
-          </div>
-
-          <div className="mt-6 pt-6 border-t border-border">
-            <p className="text-xs text-muted-foreground text-center mb-2">Demo Credentials:</p>
-            <p className="text-xs text-muted-foreground text-center">Email: demo@stockmaster.com</p>
-            <p className="text-xs text-muted-foreground text-center">Password: demo123</p>
           </div>
         </div>
       </Card>

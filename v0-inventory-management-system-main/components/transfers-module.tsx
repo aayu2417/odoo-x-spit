@@ -26,9 +26,16 @@ interface Product {
   name: string
 }
 
+interface Warehouse {
+  id: string
+  name: string
+  location: string
+}
+
 export default function TransfersModule() {
   const [transfers, setTransfers] = useState<Transfer[]>([])
   const [products, setProducts] = useState<Product[]>([])
+  const [warehouses, setWarehouses] = useState<Warehouse[]>([])
   const [loading, setLoading] = useState(true)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -37,16 +44,24 @@ export default function TransfersModule() {
   useEffect(() => {
     fetchTransfers()
     fetchProducts()
+    fetchWarehouses()
   }, [])
 
   const fetchTransfers = async () => {
     try {
       setLoading(true)
-      const res = await fetch("/api/transfers")
-      const data = await res.json()
-      setTransfers(data)
+      const { apiFetch } = await import("@/lib/api-helpers")
+      const res = await apiFetch("/api/transfers")
+      if (res.ok) {
+        const data = await res.json()
+        setTransfers(Array.isArray(data) ? data : [])
+      } else {
+        console.error("Failed to fetch transfers:", res.statusText)
+        setTransfers([])
+      }
     } catch (error) {
       console.error("Failed to fetch transfers:", error)
+      setTransfers([])
     } finally {
       setLoading(false)
     }
@@ -54,11 +69,35 @@ export default function TransfersModule() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch("/api/products")
-      const data = await res.json()
-      setProducts(data)
+      const { apiFetch } = await import("@/lib/api-helpers")
+      const res = await apiFetch("/api/products")
+      if (res.ok) {
+        const data = await res.json()
+        setProducts(Array.isArray(data) ? data : [])
+      } else {
+        console.error("Failed to fetch products:", res.statusText)
+        setProducts([])
+      }
     } catch (error) {
       console.error("Failed to fetch products:", error)
+      setProducts([])
+    }
+  }
+
+  const fetchWarehouses = async () => {
+    try {
+      const { apiFetch } = await import("@/lib/api-helpers")
+      const res = await apiFetch("/api/warehouses")
+      if (res.ok) {
+        const data = await res.json()
+        setWarehouses(Array.isArray(data) ? data : [])
+      } else {
+        console.error("Failed to fetch warehouses:", res.statusText)
+        setWarehouses([])
+      }
+    } catch (error) {
+      console.error("Failed to fetch warehouses:", error)
+      setWarehouses([])
     }
   }
 
@@ -82,10 +121,17 @@ export default function TransfersModule() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      const { apiFetch } = await import("@/lib/api-helpers")
       if (editingId) {
-        await fetch(`/api/transfers/${editingId}`, { method: "PUT", body: JSON.stringify(formData) })
+        await apiFetch(`/api/transfers/${editingId}`, {
+          method: "PUT",
+          body: JSON.stringify(formData),
+        })
       } else {
-        await fetch("/api/transfers", { method: "POST", body: JSON.stringify({ ...formData, status: "Draft" }) })
+        await apiFetch("/api/transfers", {
+          method: "POST",
+          body: JSON.stringify({ ...formData, status: "Draft" }),
+        })
       }
       setIsDialogOpen(false)
       fetchTransfers()
@@ -97,7 +143,8 @@ export default function TransfersModule() {
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure?")) {
       try {
-        await fetch(`/api/transfers/${id}`, { method: "DELETE" })
+        const { apiFetch } = await import("@/lib/api-helpers")
+        await apiFetch(`/api/transfers/${id}`, { method: "DELETE" })
         fetchTransfers()
       } catch (error) {
         console.error("Failed to delete transfer:", error)
@@ -107,7 +154,11 @@ export default function TransfersModule() {
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
-      await fetch(`/api/transfers/${id}`, { method: "PUT", body: JSON.stringify({ status: newStatus }) })
+      const { apiFetch } = await import("@/lib/api-helpers")
+      await apiFetch(`/api/transfers/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ status: newStatus }),
+      })
       fetchTransfers()
     } catch (error) {
       console.error("Failed to update transfer status:", error)
@@ -221,24 +272,36 @@ export default function TransfersModule() {
               </select>
             </div>
             <div>
-              <Label htmlFor="from">From Location</Label>
-              <Input
-                id="from"
+              <Label htmlFor="from">From Warehouse</Label>
+              <select
+                className="w-full px-3 py-2 border border-border rounded-md bg-background"
                 value={formData.from}
                 onChange={(e) => setFormData({ ...formData, from: e.target.value })}
-                placeholder="Enter source location"
                 required
-              />
+              >
+                <option value="">Select source warehouse</option>
+                {warehouses.map((w) => (
+                  <option key={w.id} value={w.name}>
+                    {w.name} ({w.location})
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
-              <Label htmlFor="to">To Location</Label>
-              <Input
-                id="to"
+              <Label htmlFor="to">To Warehouse</Label>
+              <select
+                className="w-full px-3 py-2 border border-border rounded-md bg-background"
                 value={formData.to}
                 onChange={(e) => setFormData({ ...formData, to: e.target.value })}
-                placeholder="Enter destination location"
                 required
-              />
+              >
+                <option value="">Select destination warehouse</option>
+                {warehouses.map((w) => (
+                  <option key={w.id} value={w.name}>
+                    {w.name} ({w.location})
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <Label htmlFor="qty">Quantity</Label>

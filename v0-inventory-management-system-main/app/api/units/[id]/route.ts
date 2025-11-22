@@ -10,12 +10,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return Response.json({ error: "Organization ID required" }, { status: 401 })
     }
 
-    const product = await db.products.getById(id, organizationId)
-    if (!product) return Response.json({ error: "Product not found" }, { status: 404 })
-    return Response.json(product)
+    const unit = await db.units.getById(id, organizationId)
+    if (!unit) {
+      return Response.json({ error: "Unit not found" }, { status: 404 })
+    }
+    return Response.json(unit)
   } catch (error) {
-    console.error("Product fetch error:", error)
-    return Response.json({ error: "Failed to fetch product" }, { status: 500 })
+    console.error("Unit fetch error:", error)
+    return Response.json({ error: "Failed to fetch unit" }, { status: 500 })
   }
 }
 
@@ -30,28 +32,29 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     const body = await request.json()
-    const oldProduct = await db.products.getById(id, organizationId)
-    const product = await db.products.update(id, organizationId, body)
+    const unit = await db.units.update(id, organizationId, body)
     
-    if (!product) return Response.json({ error: "Product not found" }, { status: 404 })
+    if (!unit) {
+      return Response.json({ error: "Unit not found" }, { status: 404 })
+    }
 
     // Create audit log
-    if (userId && oldProduct) {
+    if (userId) {
       await db.auditLogs.create({
         organizationId,
         action: "UPDATE",
         userId,
-        documentType: "Product",
-        documentId: product.id,
+        documentType: "Unit",
+        documentId: unit.id,
         changes: body,
         timestamp: new Date().toISOString(),
       })
     }
 
-    return Response.json(product)
+    return Response.json(unit)
   } catch (error) {
-    console.error("Product update error:", error)
-    return Response.json({ error: "Failed to update product" }, { status: 500 })
+    console.error("Unit update error:", error)
+    return Response.json({ error: "Failed to update unit" }, { status: 500 })
   }
 }
 
@@ -65,7 +68,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       return Response.json({ error: "Organization ID required" }, { status: 401 })
     }
 
-    await db.products.delete(id, organizationId)
+    await db.units.delete(id, organizationId)
 
     // Create audit log
     if (userId) {
@@ -73,7 +76,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         organizationId,
         action: "DELETE",
         userId,
-        documentType: "Product",
+        documentType: "Unit",
         documentId: id,
         changes: {},
         timestamp: new Date().toISOString(),
@@ -82,7 +85,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     return Response.json({ success: true })
   } catch (error) {
-    console.error("Product delete error:", error)
-    return Response.json({ error: "Failed to delete product" }, { status: 500 })
+    console.error("Unit delete error:", error)
+    return Response.json({ error: "Failed to delete unit" }, { status: 500 })
   }
 }

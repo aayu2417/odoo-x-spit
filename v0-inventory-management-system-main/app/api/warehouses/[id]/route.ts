@@ -10,12 +10,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return Response.json({ error: "Organization ID required" }, { status: 401 })
     }
 
-    const product = await db.products.getById(id, organizationId)
-    if (!product) return Response.json({ error: "Product not found" }, { status: 404 })
-    return Response.json(product)
+    const warehouse = await db.warehouses.getById(id, organizationId)
+    if (!warehouse) {
+      return Response.json({ error: "Warehouse not found" }, { status: 404 })
+    }
+    return Response.json(warehouse)
   } catch (error) {
-    console.error("Product fetch error:", error)
-    return Response.json({ error: "Failed to fetch product" }, { status: 500 })
+    console.error("Warehouse fetch error:", error)
+    return Response.json({ error: "Failed to fetch warehouse" }, { status: 500 })
   }
 }
 
@@ -30,28 +32,29 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     const body = await request.json()
-    const oldProduct = await db.products.getById(id, organizationId)
-    const product = await db.products.update(id, organizationId, body)
+    const warehouse = await db.warehouses.update(id, organizationId, body)
     
-    if (!product) return Response.json({ error: "Product not found" }, { status: 404 })
+    if (!warehouse) {
+      return Response.json({ error: "Warehouse not found" }, { status: 404 })
+    }
 
     // Create audit log
-    if (userId && oldProduct) {
+    if (userId) {
       await db.auditLogs.create({
         organizationId,
         action: "UPDATE",
         userId,
-        documentType: "Product",
-        documentId: product.id,
+        documentType: "Warehouse",
+        documentId: warehouse.id,
         changes: body,
         timestamp: new Date().toISOString(),
       })
     }
 
-    return Response.json(product)
+    return Response.json(warehouse)
   } catch (error) {
-    console.error("Product update error:", error)
-    return Response.json({ error: "Failed to update product" }, { status: 500 })
+    console.error("Warehouse update error:", error)
+    return Response.json({ error: "Failed to update warehouse" }, { status: 500 })
   }
 }
 
@@ -65,7 +68,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       return Response.json({ error: "Organization ID required" }, { status: 401 })
     }
 
-    await db.products.delete(id, organizationId)
+    await db.warehouses.delete(id, organizationId)
 
     // Create audit log
     if (userId) {
@@ -73,7 +76,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         organizationId,
         action: "DELETE",
         userId,
-        documentType: "Product",
+        documentType: "Warehouse",
         documentId: id,
         changes: {},
         timestamp: new Date().toISOString(),
@@ -82,7 +85,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     return Response.json({ success: true })
   } catch (error) {
-    console.error("Product delete error:", error)
-    return Response.json({ error: "Failed to delete product" }, { status: 500 })
+    console.error("Warehouse delete error:", error)
+    return Response.json({ error: "Failed to delete warehouse" }, { status: 500 })
   }
 }

@@ -8,10 +8,10 @@ export async function GET(request: Request) {
       return Response.json({ error: "Organization ID required" }, { status: 401 })
     }
 
-    const products = await db.products.getAll(organizationId)
-    return Response.json(Array.isArray(products) ? products : [])
+    const warehouses = await db.warehouses.getAll(organizationId)
+    return Response.json(Array.isArray(warehouses) ? warehouses : [])
   } catch (error) {
-    console.error("Products fetch error:", error)
+    console.error("Warehouses fetch error:", error)
     return Response.json([])
   }
 }
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const product = await db.products.create({
+    const warehouse = await db.warehouses.create({
       ...body,
       organizationId,
     })
@@ -37,16 +37,16 @@ export async function POST(request: Request) {
         organizationId,
         action: "CREATE",
         userId,
-        documentType: "Product",
-        documentId: product.id,
-        changes: { name: product.name, sku: product.sku },
+        documentType: "Warehouse",
+        documentId: warehouse.id,
+        changes: { name: warehouse.name, location: warehouse.location },
         timestamp: new Date().toISOString(),
       })
     }
 
-    return Response.json(product, { status: 201 })
+    return Response.json(warehouse, { status: 201 })
   } catch (error) {
-    console.error("Product create error:", error)
-    return Response.json({ error: "Failed to create product" }, { status: 500 })
+    console.error("Warehouse create error:", error)
+    return Response.json({ error: "Failed to create warehouse" }, { status: 500 })
   }
 }
