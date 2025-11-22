@@ -1,0 +1,1596 @@
+{
+  "name": "StockMaster Component Wireframes",
+  "version": "1.0.0",
+  "description": "Figma-compatible JSON wireframes for all StockMaster pages and components",
+  "pages": [
+    {
+      "id": "page-auth",
+      "name": "Authentication",
+      "components": [
+        {
+          "id": "login-form",
+          "name": "Login Form",
+          "type": "component",
+          "layout": {
+            "width": 400,
+            "height": 600,
+            "backgroundColor": "#0F172A"
+          },
+          "elements": [
+            {
+              "type": "text",
+              "content": "StockMaster",
+              "style": {
+                "fontSize": 32,
+                "fontWeight": "bold",
+                "color": "#FFFFFF",
+                "textAlign": "center",
+                "marginTop": 60
+              }
+            },
+            {
+              "type": "text",
+              "content": "Sign in to your account",
+              "style": {
+                "fontSize": 16,
+                "color": "#94A3B8",
+                "textAlign": "center",
+                "marginTop": 20
+              }
+            },
+            {
+              "type": "input",
+              "label": "Email",
+              "placeholder": "you@example.com",
+              "style": {
+                "width": "100%",
+                "height": 48,
+                "backgroundColor": "#0B1020",
+                "borderColor": "#94A3B8",
+                "borderRadius": 8,
+                "color": "#FFFFFF",
+                "marginTop": 40,
+                "padding": "0 16px"
+              }
+            },
+            {
+              "type": "input",
+              "label": "Password",
+              "placeholder": "••••••••",
+              "inputType": "password",
+              "style": {
+                "width": "100%",
+                "height": 48,
+                "backgroundColor": "#0B1020",
+                "borderColor": "#94A3B8",
+                "borderRadius": 8,
+                "color": "#FFFFFF",
+                "marginTop": 24,
+                "padding": "0 16px"
+              }
+            },
+            {
+              "type": "checkbox",
+              "label": "Remember me",
+              "style": {
+                "marginTop": 16,
+                "color": "#94A3B8"
+              }
+            },
+            {
+              "type": "button",
+              "label": "Sign In",
+              "style": {
+                "width": "100%",
+                "height": 48,
+                "backgroundColor": "#FF6B6B",
+                "color": "#FFFFFF",
+                "borderRadius": 8,
+                "marginTop": 32,
+                "fontWeight": "600"
+              }
+            },
+            {
+              "type": "link",
+              "content": "Forgot password?",
+              "style": {
+                "color": "#FF6B6B",
+                "textAlign": "center",
+                "marginTop": 16
+              }
+            },
+            {
+              "type": "link",
+              "content": "Don't have an account? Sign up",
+              "style": {
+                "color": "#94A3B8",
+                "textAlign": "center",
+                "marginTop": 24
+              }
+            }
+          ]
+        },
+        {
+          "id": "signup-form",
+          "name": "Signup Form",
+          "type": "component",
+          "layout": {
+            "width": 400,
+            "height": 700,
+            "backgroundColor": "#0F172A"
+          },
+          "elements": [
+            {
+              "type": "text",
+              "content": "Create Account",
+              "style": {
+                "fontSize": 32,
+                "fontWeight": "bold",
+                "color": "#FFFFFF",
+                "textAlign": "center",
+                "marginTop": 60
+              }
+            },
+            {
+              "type": "input",
+              "label": "Full Name",
+              "placeholder": "John Doe",
+              "style": {
+                "width": "100%",
+                "height": 48,
+                "backgroundColor": "#0B1020",
+                "borderColor": "#94A3B8",
+                "borderRadius": 8,
+                "color": "#FFFFFF",
+                "marginTop": 40,
+                "padding": "0 16px"
+              }
+            },
+            {
+              "type": "input",
+              "label": "Email",
+              "placeholder": "you@example.com",
+              "style": {
+                "width": "100%",
+                "height": 48,
+                "backgroundColor": "#0B1020",
+                "borderColor": "#94A3B8",
+                "borderRadius": 8,
+                "color": "#FFFFFF",
+                "marginTop": 24,
+                "padding": "0 16px"
+              }
+            },
+            {
+              "type": "input",
+              "label": "Password",
+              "placeholder": "••••••••",
+              "inputType": "password",
+              "style": {
+                "width": "100%",
+                "height": 48,
+                "backgroundColor": "#0B1020",
+                "borderColor": "#94A3B8",
+                "borderRadius": 8,
+                "color": "#FFFFFF",
+                "marginTop": 24,
+                "padding": "0 16px"
+              }
+            },
+            {
+              "type": "select",
+              "label": "Role",
+              "options": ["ADMIN", "WAREHOUSE_MANAGER", "STOCK_CLERK", "VIEWER"],
+              "style": {
+                "width": "100%",
+                "height": 48,
+                "backgroundColor": "#0B1020",
+                "borderColor": "#94A3B8",
+                "borderRadius": 8,
+                "color": "#FFFFFF",
+                "marginTop": 24,
+                "padding": "0 16px"
+              }
+            },
+            {
+              "type": "button",
+              "label": "Create Account",
+              "style": {
+                "width": "100%",
+                "height": 48,
+                "backgroundColor": "#FF6B6B",
+                "color": "#FFFFFF",
+                "borderRadius": 8,
+                "marginTop": 32,
+                "fontWeight": "600"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page-dashboard",
+      "name": "Dashboard",
+      "components": [
+        {
+          "id": "dashboard-layout",
+          "name": "Dashboard Layout",
+          "type": "page",
+          "layout": {
+            "width": 1920,
+            "height": 1080,
+            "backgroundColor": "#0F172A"
+          },
+          "elements": [
+            {
+              "type": "sidebar",
+              "id": "main-sidebar",
+              "position": { "x": 0, "y": 0 },
+              "width": 256,
+              "height": 1080,
+              "backgroundColor": "#0B1020"
+            },
+            {
+              "type": "topbar",
+              "id": "main-topbar",
+              "position": { "x": 256, "y": 0 },
+              "width": 1664,
+              "height": 64,
+              "backgroundColor": "#0B1020"
+            },
+            {
+              "type": "content-area",
+              "id": "dashboard-content",
+              "position": { "x": 256, "y": 64 },
+              "width": 1664,
+              "height": 1016,
+              "backgroundColor": "#0F172A",
+              "padding": 32
+            }
+          ]
+        },
+        {
+          "id": "kpi-cards",
+          "name": "KPI Cards",
+          "type": "component",
+          "layout": {
+            "width": 1600,
+            "height": 200,
+            "flexDirection": "row",
+            "gap": 24
+          },
+          "elements": [
+            {
+              "type": "card",
+              "id": "kpi-total-products",
+              "width": 280,
+              "height": 160,
+              "backgroundColor": "#0B1020",
+              "borderRadius": 16,
+              "padding": 24,
+              "elements": [
+                {
+                  "type": "text",
+                  "content": "Total Products",
+                  "style": {
+                    "fontSize": 14,
+                    "color": "#94A3B8",
+                    "marginBottom": 8
+                  }
+                },
+                {
+                  "type": "text",
+                  "content": "1,234",
+                  "style": {
+                    "fontSize": 36,
+                    "fontWeight": "bold",
+                    "color": "#FFFFFF"
+                  }
+                },
+                {
+                  "type": "sparkline",
+                  "data": [10, 20, 15, 25, 30],
+                  "style": {
+                    "marginTop": 12,
+                    "height": 40,
+                    "color": "#A3E635"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "card",
+              "id": "kpi-stock-value",
+              "width": 280,
+              "height": 160,
+              "backgroundColor": "#0B1020",
+              "borderRadius": 16,
+              "padding": 24,
+              "elements": [
+                {
+                  "type": "text",
+                  "content": "Total Stock Value",
+                  "style": {
+                    "fontSize": 14,
+                    "color": "#94A3B8",
+                    "marginBottom": 8
+                  }
+                },
+                {
+                  "type": "text",
+                  "content": "$125,000",
+                  "style": {
+                    "fontSize": 36,
+                    "fontWeight": "bold",
+                    "color": "#FFFFFF"
+                  }
+                },
+                {
+                  "type": "trend-chip",
+                  "content": "+12.5%",
+                  "style": {
+                    "marginTop": 12,
+                    "color": "#A3E635"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "card",
+              "id": "kpi-low-stock",
+              "width": 280,
+              "height": 160,
+              "backgroundColor": "#0B1020",
+              "borderRadius": 16,
+              "padding": 24,
+              "elements": [
+                {
+                  "type": "text",
+                  "content": "Low Stock Items",
+                  "style": {
+                    "fontSize": 14,
+                    "color": "#94A3B8",
+                    "marginBottom": 8
+                  }
+                },
+                {
+                  "type": "text",
+                  "content": "12",
+                  "style": {
+                    "fontSize": 36,
+                    "fontWeight": "bold",
+                    "color": "#F43F5E"
+                  }
+                },
+                {
+                  "type": "badge",
+                  "content": "Needs Attention",
+                  "style": {
+                    "marginTop": 12,
+                    "backgroundColor": "#F43F5E",
+                    "color": "#FFFFFF",
+                    "padding": "4px 12px",
+                    "borderRadius": 4
+                  }
+                }
+              ]
+            },
+            {
+              "type": "card",
+              "id": "kpi-todays-activity",
+              "width": 280,
+              "height": 160,
+              "backgroundColor": "#0B1020",
+              "borderRadius": 16,
+              "padding": 24,
+              "elements": [
+                {
+                  "type": "text",
+                  "content": "Today's Activity",
+                  "style": {
+                    "fontSize": 14,
+                    "color": "#94A3B8",
+                    "marginBottom": 8
+                  }
+                },
+                {
+                  "type": "text",
+                  "content": "5 Receipts",
+                  "style": {
+                    "fontSize": 18,
+                    "color": "#FFFFFF",
+                    "marginBottom": 4
+                  }
+                },
+                {
+                  "type": "text",
+                  "content": "8 Deliveries",
+                  "style": {
+                    "fontSize": 18,
+                    "color": "#FFFFFF"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "dashboard-filters",
+          "name": "Dashboard Filters",
+          "type": "component",
+          "layout": {
+            "width": 1600,
+            "height": 80,
+            "flexDirection": "row",
+            "gap": 16,
+            "alignItems": "center"
+          },
+          "elements": [
+            {
+              "type": "select",
+              "label": "Warehouse",
+              "placeholder": "All Warehouses",
+              "style": {
+                "width": 200,
+                "height": 40,
+                "backgroundColor": "#0B1020",
+                "borderColor": "#94A3B8",
+                "borderRadius": 8,
+                "color": "#FFFFFF"
+              }
+            },
+            {
+              "type": "datepicker",
+              "label": "Date From",
+              "style": {
+                "width": 180,
+                "height": 40,
+                "backgroundColor": "#0B1020",
+                "borderColor": "#94A3B8",
+                "borderRadius": 8
+              }
+            },
+            {
+              "type": "datepicker",
+              "label": "Date To",
+              "style": {
+                "width": 180,
+                "height": 40,
+                "backgroundColor": "#0B1020",
+                "borderColor": "#94A3B8",
+                "borderRadius": 8
+              }
+            },
+            {
+              "type": "select",
+              "label": "Category",
+              "placeholder": "All Categories",
+              "style": {
+                "width": 200,
+                "height": 40,
+                "backgroundColor": "#0B1020",
+                "borderColor": "#94A3B8",
+                "borderRadius": 8
+              }
+            },
+            {
+              "type": "button",
+              "label": "Apply Filters",
+              "style": {
+                "height": 40,
+                "backgroundColor": "#FF6B6B",
+                "color": "#FFFFFF",
+                "borderRadius": 8,
+                "padding": "0 24px"
+              }
+            },
+            {
+              "type": "button",
+              "label": "Reset",
+              "variant": "outline",
+              "style": {
+                "height": 40,
+                "borderColor": "#94A3B8",
+                "color": "#94A3B8",
+                "borderRadius": 8,
+                "padding": "0 24px"
+              }
+            }
+          ]
+        },
+        {
+          "id": "stock-chart",
+          "name": "Stock by Warehouse Chart",
+          "type": "component",
+          "layout": {
+            "width": 800,
+            "height": 400,
+            "backgroundColor": "#0B1020",
+            "borderRadius": 16,
+            "padding": 24
+          },
+          "elements": [
+            {
+              "type": "text",
+              "content": "Stock Value by Warehouse",
+              "style": {
+                "fontSize": 20,
+                "fontWeight": "600",
+                "color": "#FFFFFF",
+                "marginBottom": 24
+              }
+            },
+            {
+              "type": "barchart",
+              "data": [
+                { "name": "Warehouse A", "value": 75000 },
+                { "name": "Warehouse B", "value": 50000 },
+                { "name": "Warehouse C", "value": 30000 }
+              ],
+              "style": {
+                "height": 320,
+                "color": "#FF6B6B"
+              }
+            }
+          ]
+        },
+        {
+          "id": "recent-activity",
+          "name": "Recent Activity Feed",
+          "type": "component",
+          "layout": {
+            "width": 600,
+            "height": 400,
+            "backgroundColor": "#0B1020",
+            "borderRadius": 16,
+            "padding": 24
+          },
+          "elements": [
+            {
+              "type": "text",
+              "content": "Recent Activity",
+              "style": {
+                "fontSize": 20,
+                "fontWeight": "600",
+                "color": "#FFFFFF",
+                "marginBottom": 24
+              }
+            },
+            {
+              "type": "activity-list",
+              "items": [
+                {
+                  "type": "RECEIPT",
+                  "message": "Received 20 kg Steel Rods",
+                  "timestamp": "2 minutes ago",
+                  "user": "John Doe"
+                },
+                {
+                  "type": "DELIVERY",
+                  "message": "Shipped 10 kg to Customer A",
+                  "timestamp": "15 minutes ago",
+                  "user": "Jane Smith"
+                },
+                {
+                  "type": "ADJUSTMENT",
+                  "message": "Adjusted -3 kg (DAMAGED)",
+                  "timestamp": "1 hour ago",
+                  "user": "Bob Wilson"
+                }
+              ],
+              "style": {
+                "gap": 16
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page-products",
+      "name": "Products",
+      "components": [
+        {
+          "id": "products-list",
+          "name": "Products List",
+          "type": "page",
+          "layout": {
+            "width": 1920,
+            "height": 1080,
+            "backgroundColor": "#0F172A"
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Products",
+              "style": {
+                "fontSize": 32,
+                "fontWeight": "bold",
+                "color": "#FFFFFF",
+                "marginBottom": 24
+              }
+            },
+            {
+              "type": "toolbar",
+              "layout": {
+                "width": "100%",
+                "height": 64,
+                "flexDirection": "row",
+                "justifyContent": "space-between",
+                "alignItems": "center"
+              },
+              "elements": [
+                {
+                  "type": "search-input",
+                  "placeholder": "Search products...",
+                  "style": {
+                    "width": 400,
+                    "height": 40,
+                    "backgroundColor": "#0B1020",
+                    "borderColor": "#94A3B8",
+                    "borderRadius": 8,
+                    "color": "#FFFFFF",
+                    "padding": "0 16px"
+                  }
+                },
+                {
+                  "type": "button-group",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "label": "Import CSV",
+                      "variant": "outline",
+                      "style": {
+                        "height": 40,
+                        "borderColor": "#94A3B8",
+                        "color": "#94A3B8",
+                        "borderRadius": 8,
+                        "padding": "0 24px"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "label": "+ New Product",
+                      "style": {
+                        "height": 40,
+                        "backgroundColor": "#FF6B6B",
+                        "color": "#FFFFFF",
+                        "borderRadius": 8,
+                        "padding": "0 24px"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "table",
+              "columns": [
+                { "key": "sku", "label": "SKU", "width": 120 },
+                { "key": "name", "label": "Name", "width": 200 },
+                { "key": "category", "label": "Category", "width": 150 },
+                { "key": "totalStock", "label": "Total Stock", "width": 120 },
+                { "key": "cost", "label": "Cost", "width": 100 },
+                { "key": "price", "label": "Retail Price", "width": 120 },
+                { "key": "warehouses", "label": "Warehouses", "width": 200 },
+                { "key": "actions", "label": "Actions", "width": 200 }
+              ],
+              "rows": [
+                {
+                  "sku": "STL-0001",
+                  "name": "Steel Rod 1kg",
+                  "category": "Raw Material",
+                  "totalStock": 100,
+                  "cost": "$8.00",
+                  "price": "$12.50",
+                  "warehouses": "A: 50, B: 30, C: 20",
+                  "actions": ["Edit", "Transfer", "Adjust", "History"]
+                }
+              ],
+              "style": {
+                "width": "100%",
+                "backgroundColor": "#0B1020",
+                "borderRadius": 16,
+                "padding": 24
+              }
+            }
+          ]
+        },
+        {
+          "id": "product-detail-modal",
+          "name": "Product Detail Modal",
+          "type": "modal",
+          "layout": {
+            "width": 900,
+            "height": 700,
+            "backgroundColor": "#0B1020",
+            "borderRadius": 16
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Product Details",
+              "style": {
+                "fontSize": 24,
+                "fontWeight": "bold",
+                "color": "#FFFFFF",
+                "marginBottom": 24
+              }
+            },
+            {
+              "type": "tabs",
+              "tabs": [
+                {
+                  "id": "overview",
+                  "label": "Overview",
+                  "content": [
+                    {
+                      "type": "image-gallery",
+                      "images": [],
+                      "style": {
+                        "width": "100%",
+                        "height": 200,
+                        "backgroundColor": "#0F172A",
+                        "borderRadius": 8
+                      }
+                    },
+                    {
+                      "type": "form-grid",
+                      "columns": 2,
+                      "fields": [
+                        { "label": "SKU", "value": "STL-0001", "readonly": true },
+                        { "label": "Name", "value": "Steel Rod 1kg" },
+                        { "label": "Category", "value": "Raw Material" },
+                        { "label": "Unit", "value": "kg" },
+                        { "label": "Cost", "value": "$8.00" },
+                        { "label": "Price", "value": "$12.50" },
+                        { "label": "Reorder Point", "value": "10" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "stock",
+                  "label": "Stock by Warehouse",
+                  "content": [
+                    {
+                      "type": "table",
+                      "columns": [
+                        { "key": "warehouse", "label": "Warehouse" },
+                        { "key": "qty", "label": "Quantity" },
+                        { "key": "value", "label": "Value" }
+                      ],
+                      "rows": [
+                        { "warehouse": "Warehouse A", "qty": "50 kg", "value": "$400.00" },
+                        { "warehouse": "Warehouse B", "qty": "30 kg", "value": "$240.00" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "variants",
+                  "label": "Variants",
+                  "content": [
+                    {
+                      "type": "variant-list",
+                      "items": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page-receipts",
+      "name": "Receipts",
+      "components": [
+        {
+          "id": "receipts-list",
+          "name": "Receipts List",
+          "type": "page",
+          "layout": {
+            "width": 1920,
+            "height": 1080,
+            "backgroundColor": "#0F172A"
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Receipts",
+              "style": {
+                "fontSize": 32,
+                "fontWeight": "bold",
+                "color": "#FFFFFF"
+              }
+            },
+            {
+              "type": "button",
+              "label": "+ New Receipt",
+              "style": {
+                "height": 40,
+                "backgroundColor": "#FF6B6B",
+                "color": "#FFFFFF",
+                "borderRadius": 8,
+                "padding": "0 24px",
+                "marginTop": 24
+              }
+            },
+            {
+              "type": "table",
+              "columns": [
+                { "key": "reference", "label": "Reference" },
+                { "key": "supplier", "label": "Supplier" },
+                { "key": "warehouse", "label": "Warehouse" },
+                { "key": "items", "label": "Items" },
+                { "key": "status", "label": "Status" },
+                { "key": "date", "label": "Date" },
+                { "key": "actions", "label": "Actions" }
+              ],
+              "rows": []
+            }
+          ]
+        },
+        {
+          "id": "receipt-form",
+          "name": "Receipt Form",
+          "type": "modal",
+          "layout": {
+            "width": 800,
+            "height": 700,
+            "backgroundColor": "#0B1020",
+            "borderRadius": 16
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Create Receipt",
+              "style": {
+                "fontSize": 24,
+                "fontWeight": "bold",
+                "color": "#FFFFFF",
+                "marginBottom": 24
+              }
+            },
+            {
+              "type": "form",
+              "fields": [
+                {
+                  "type": "input",
+                  "label": "Supplier",
+                  "required": true,
+                  "style": {
+                    "width": "100%",
+                    "height": 48,
+                    "backgroundColor": "#0F172A",
+                    "borderColor": "#94A3B8",
+                    "borderRadius": 8,
+                    "color": "#FFFFFF"
+                  }
+                },
+                {
+                  "type": "input",
+                  "label": "PO Reference",
+                  "style": {
+                    "width": "100%",
+                    "height": 48,
+                    "backgroundColor": "#0F172A",
+                    "borderColor": "#94A3B8",
+                    "borderRadius": 8
+                  }
+                },
+                {
+                  "type": "select",
+                  "label": "Warehouse",
+                  "required": true,
+                  "style": {
+                    "width": "100%",
+                    "height": 48,
+                    "backgroundColor": "#0F172A",
+                    "borderColor": "#94A3B8",
+                    "borderRadius": 8
+                  }
+                }
+              ]
+            },
+            {
+              "type": "table",
+              "label": "Items",
+              "columns": [
+                { "key": "product", "label": "Product" },
+                { "key": "qty", "label": "Quantity" },
+                { "key": "unitCost", "label": "Unit Cost" },
+                { "key": "total", "label": "Total" },
+                { "key": "actions", "label": "" }
+              ],
+              "rows": [],
+              "style": {
+                "marginTop": 24
+              }
+            },
+            {
+              "type": "button",
+              "label": "+ Add Item",
+              "variant": "outline",
+              "style": {
+                "marginTop": 16,
+                "height": 40,
+                "borderColor": "#94A3B8",
+                "color": "#94A3B8"
+              }
+            },
+            {
+              "type": "button-group",
+              "layout": {
+                "flexDirection": "row",
+                "justifyContent": "flex-end",
+                "gap": 16,
+                "marginTop": 32
+              },
+              "elements": [
+                {
+                  "type": "button",
+                  "label": "Cancel",
+                  "variant": "outline"
+                },
+                {
+                  "type": "button",
+                  "label": "Create Receipt",
+                  "style": {
+                    "backgroundColor": "#FF6B6B",
+                    "color": "#FFFFFF"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page-deliveries",
+      "name": "Deliveries",
+      "components": [
+        {
+          "id": "deliveries-list",
+          "name": "Deliveries List",
+          "type": "page",
+          "layout": {
+            "width": 1920,
+            "height": 1080,
+            "backgroundColor": "#0F172A"
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Deliveries",
+              "style": {
+                "fontSize": 32,
+                "fontWeight": "bold",
+                "color": "#FFFFFF"
+              }
+            },
+            {
+              "type": "button",
+              "label": "+ New Delivery",
+              "style": {
+                "height": 40,
+                "backgroundColor": "#FF6B6B",
+                "color": "#FFFFFF",
+                "borderRadius": 8,
+                "padding": "0 24px",
+                "marginTop": 24
+              }
+            },
+            {
+              "type": "table",
+              "columns": [
+                { "key": "customer", "label": "Customer" },
+                { "key": "warehouse", "label": "Warehouse" },
+                { "key": "items", "label": "Items" },
+                { "key": "status", "label": "Status" },
+                { "key": "date", "label": "Date" },
+                { "key": "actions", "label": "Actions" }
+              ],
+              "rows": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page-transfers",
+      "name": "Transfers",
+      "components": [
+        {
+          "id": "transfers-list",
+          "name": "Transfers List",
+          "type": "page",
+          "layout": {
+            "width": 1920,
+            "height": 1080,
+            "backgroundColor": "#0F172A"
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Internal Transfers",
+              "style": {
+                "fontSize": 32,
+                "fontWeight": "bold",
+                "color": "#FFFFFF"
+              }
+            },
+            {
+              "type": "button",
+              "label": "+ New Transfer",
+              "style": {
+                "height": 40,
+                "backgroundColor": "#FF6B6B",
+                "color": "#FFFFFF",
+                "borderRadius": 8,
+                "padding": "0 24px",
+                "marginTop": 24
+              }
+            },
+            {
+              "type": "table",
+              "columns": [
+                { "key": "from", "label": "From Warehouse" },
+                { "key": "to", "label": "To Warehouse" },
+                { "key": "items", "label": "Items" },
+                { "key": "status", "label": "Status" },
+                { "key": "date", "label": "Date" },
+                { "key": "actions", "label": "Actions" }
+              ],
+              "rows": []
+            }
+          ]
+        },
+        {
+          "id": "transfer-form",
+          "name": "Transfer Form",
+          "type": "modal",
+          "layout": {
+            "width": 800,
+            "height": 600,
+            "backgroundColor": "#0B1020",
+            "borderRadius": 16
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Create Transfer",
+              "style": {
+                "fontSize": 24,
+                "fontWeight": "bold",
+                "color": "#FFFFFF"
+              }
+            },
+            {
+              "type": "form",
+              "fields": [
+                {
+                  "type": "select",
+                  "label": "From Warehouse",
+                  "required": true
+                },
+                {
+                  "type": "select",
+                  "label": "To Warehouse",
+                  "required": true
+                }
+              ]
+            },
+            {
+              "type": "table",
+              "label": "Items",
+              "columns": [
+                { "key": "product", "label": "Product" },
+                { "key": "qty", "label": "Quantity" },
+                { "key": "actions", "label": "" }
+              ],
+              "rows": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page-adjustments",
+      "name": "Stock Adjustments",
+      "components": [
+        {
+          "id": "adjustment-form",
+          "name": "Adjustment Form",
+          "type": "modal",
+          "layout": {
+            "width": 600,
+            "height": 700,
+            "backgroundColor": "#0B1020",
+            "borderRadius": 16
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Stock Adjustment",
+              "style": {
+                "fontSize": 24,
+                "fontWeight": "bold",
+                "color": "#FFFFFF",
+                "marginBottom": 24
+              }
+            },
+            {
+              "type": "form",
+              "fields": [
+                {
+                  "type": "select",
+                  "label": "Product",
+                  "required": true,
+                  "style": {
+                    "width": "100%",
+                    "height": 48,
+                    "backgroundColor": "#0F172A",
+                    "borderColor": "#94A3B8",
+                    "borderRadius": 8
+                  }
+                },
+                {
+                  "type": "select",
+                  "label": "Warehouse",
+                  "required": true,
+                  "style": {
+                    "width": "100%",
+                    "height": 48,
+                    "backgroundColor": "#0F172A",
+                    "borderColor": "#94A3B8",
+                    "borderRadius": 8
+                  }
+                },
+                {
+                  "type": "text",
+                  "content": "Current System Quantity: 20 kg",
+                  "style": {
+                    "color": "#94A3B8",
+                    "marginTop": 8
+                  }
+                },
+                {
+                  "type": "input",
+                  "label": "Adjusted Quantity",
+                  "placeholder": "-3",
+                  "required": true,
+                  "helperText": "Negative to reduce, positive to increase",
+                  "style": {
+                    "width": "100%",
+                    "height": 48,
+                    "backgroundColor": "#0F172A",
+                    "borderColor": "#94A3B8",
+                    "borderRadius": 8,
+                    "marginTop": 16
+                  }
+                },
+                {
+                  "type": "text",
+                  "content": "Resulting Quantity: 17 kg",
+                  "style": {
+                    "color": "#A3E635",
+                    "marginTop": 8,
+                    "fontWeight": "600"
+                  }
+                },
+                {
+                  "type": "select",
+                  "label": "Reason",
+                  "required": true,
+                  "options": [
+                    "DAMAGE",
+                    "SHRINKAGE",
+                    "COUNT_CORRECTION",
+                    "OTHER"
+                  ],
+                  "style": {
+                    "width": "100%",
+                    "height": 48,
+                    "backgroundColor": "#0F172A",
+                    "borderColor": "#94A3B8",
+                    "borderRadius": 8,
+                    "marginTop": 24
+                  }
+                },
+                {
+                  "type": "textarea",
+                  "label": "Notes",
+                  "placeholder": "e.g., 3 kg damaged during handling",
+                  "style": {
+                    "width": "100%",
+                    "minHeight": 100,
+                    "backgroundColor": "#0F172A",
+                    "borderColor": "#94A3B8",
+                    "borderRadius": 8,
+                    "marginTop": 24
+                  }
+                },
+                {
+                  "type": "file-upload",
+                  "label": "Photo (Optional)",
+                  "accept": "image/*",
+                  "style": {
+                    "marginTop": 24
+                  }
+                }
+              ]
+            },
+            {
+              "type": "confirmation-modal",
+              "content": {
+                "title": "Confirm Adjustment",
+                "message": "This will adjust stock from 20 kg to 17 kg (delta: -3 kg). This action will be logged in the ledger.",
+                "showWarehouseBreakdown": true
+              }
+            },
+            {
+              "type": "button-group",
+              "layout": {
+                "flexDirection": "row",
+                "justifyContent": "flex-end",
+                "gap": 16,
+                "marginTop": 32
+              },
+              "elements": [
+                {
+                  "type": "button",
+                  "label": "Cancel",
+                  "variant": "outline"
+                },
+                {
+                  "type": "button",
+                  "label": "Confirm & Log",
+                  "style": {
+                    "backgroundColor": "#FF6B6B",
+                    "color": "#FFFFFF"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page-ledger",
+      "name": "Move History Ledger",
+      "components": [
+        {
+          "id": "ledger-table",
+          "name": "Ledger Table",
+          "type": "page",
+          "layout": {
+            "width": 1920,
+            "height": 1080,
+            "backgroundColor": "#0F172A"
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Move History Ledger",
+              "style": {
+                "fontSize": 32,
+                "fontWeight": "bold",
+                "color": "#FFFFFF",
+                "marginBottom": 24
+              }
+            },
+            {
+              "type": "filters",
+              "layout": {
+                "flexDirection": "row",
+                "gap": 16,
+                "marginBottom": 24
+              },
+              "elements": [
+                {
+                  "type": "select",
+                  "label": "Event Type",
+                  "placeholder": "All Types",
+                  "options": ["RECEIPT", "DELIVERY", "TRANSFER_IN", "TRANSFER_OUT", "ADJUSTMENT"]
+                },
+                {
+                  "type": "select",
+                  "label": "Product",
+                  "placeholder": "All Products"
+                },
+                {
+                  "type": "select",
+                  "label": "Warehouse",
+                  "placeholder": "All Warehouses"
+                },
+                {
+                  "type": "datepicker",
+                  "label": "Date From"
+                },
+                {
+                  "type": "datepicker",
+                  "label": "Date To"
+                },
+                {
+                  "type": "button",
+                  "label": "Apply",
+                  "style": {
+                    "backgroundColor": "#FF6B6B"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "table",
+              "columns": [
+                { "key": "timestamp", "label": "Timestamp" },
+                { "key": "eventType", "label": "Type" },
+                { "key": "product", "label": "Product" },
+                { "key": "warehouse", "label": "Warehouse" },
+                { "key": "beforeQty", "label": "Before" },
+                { "key": "afterQty", "label": "After" },
+                { "key": "delta", "label": "Delta" },
+                { "key": "reason", "label": "Reason" },
+                { "key": "performedBy", "label": "User" }
+              ],
+              "rows": [
+                {
+                  "timestamp": "2025-01-15 10:30:00",
+                  "eventType": "ADJUSTMENT",
+                  "product": "Steel Rod 1kg",
+                  "warehouse": "Warehouse A",
+                  "beforeQty": "20 kg",
+                  "afterQty": "0 kg",
+                  "delta": "-20 kg",
+                  "reason": "COUNT_CORRECTION",
+                  "performedBy": "John Doe"
+                }
+              ],
+              "style": {
+                "width": "100%",
+                "backgroundColor": "#0B1020",
+                "borderRadius": 16
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page-warehouses",
+      "name": "Warehouse Settings",
+      "components": [
+        {
+          "id": "warehouse-list",
+          "name": "Warehouse List",
+          "type": "page",
+          "layout": {
+            "width": 1920,
+            "height": 1080,
+            "backgroundColor": "#0F172A"
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Warehouse Settings",
+              "style": {
+                "fontSize": 32,
+                "fontWeight": "bold",
+                "color": "#FFFFFF"
+              }
+            },
+            {
+              "type": "button",
+              "label": "+ New Warehouse",
+              "style": {
+                "height": 40,
+                "backgroundColor": "#FF6B6B",
+                "color": "#FFFFFF",
+                "borderRadius": 8,
+                "padding": "0 24px",
+                "marginTop": 24
+              }
+            },
+            {
+              "type": "card-grid",
+              "columns": 3,
+              "items": [
+                {
+                  "name": "Warehouse A",
+                  "code": "WH-A",
+                  "address": "123 Main St",
+                  "totalValue": "$75,000",
+                  "productCount": 85
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "warehouse-form",
+          "name": "Warehouse Form",
+          "type": "modal",
+          "layout": {
+            "width": 600,
+            "height": 700,
+            "backgroundColor": "#0B1020",
+            "borderRadius": 16
+          },
+          "elements": [
+            {
+              "type": "header",
+              "content": "Create Warehouse",
+              "style": {
+                "fontSize": 24,
+                "fontWeight": "bold",
+                "color": "#FFFFFF"
+              }
+            },
+            {
+              "type": "form",
+              "fields": [
+                {
+                  "type": "input",
+                  "label": "Name",
+                  "required": true
+                },
+                {
+                  "type": "input",
+                  "label": "Code",
+                  "required": true,
+                  "helperText": "Unique warehouse code"
+                },
+                {
+                  "type": "textarea",
+                  "label": "Address"
+                },
+                {
+                  "type": "input",
+                  "label": "Contact"
+                },
+                {
+                  "type": "select",
+                  "label": "Timezone"
+                },
+                {
+                  "type": "input",
+                  "label": "Default Receiving Dock"
+                },
+                {
+                  "type": "select",
+                  "label": "Currency"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "shared-components": [
+    {
+      "id": "sidebar",
+      "name": "Sidebar Navigation",
+      "type": "component",
+      "layout": {
+        "width": 256,
+        "height": 1080,
+        "backgroundColor": "#0B1020"
+      },
+      "elements": [
+        {
+          "type": "logo",
+          "content": "StockMaster",
+          "style": {
+            "fontSize": 24,
+            "fontWeight": "bold",
+            "color": "#FFFFFF",
+            "padding": "24px"
+          }
+        },
+        {
+          "type": "nav-menu",
+          "items": [
+            { "label": "Dashboard", "icon": "home", "route": "/dashboard" },
+            { "label": "Products", "icon": "package", "route": "/products" },
+            { "label": "Receipts", "icon": "inbox", "route": "/receipts" },
+            { "label": "Deliveries", "icon": "truck", "route": "/deliveries" },
+            { "label": "Transfers", "icon": "arrow-right-left", "route": "/transfers" },
+            { "label": "Adjustments", "icon": "edit", "route": "/adjustments" },
+            { "label": "Move History", "icon": "history", "route": "/ledger" },
+            { "label": "Warehouses", "icon": "warehouse", "route": "/warehouses" },
+            { "label": "Settings", "icon": "settings", "route": "/settings" }
+          ],
+          "style": {
+            "padding": "16px",
+            "gap": 8
+          }
+        }
+      ]
+    },
+    {
+      "id": "topbar",
+      "name": "Top Bar",
+      "type": "component",
+      "layout": {
+        "width": "100%",
+        "height": 64,
+        "backgroundColor": "#0B1020"
+      },
+      "elements": [
+        {
+          "type": "search-input",
+          "placeholder": "Search...",
+          "style": {
+            "width": 300,
+            "height": 40,
+            "marginLeft": 24
+          }
+        },
+        {
+          "type": "spacer"
+        },
+        {
+          "type": "notifications-bell",
+          "badge": 3
+        },
+        {
+          "type": "user-menu",
+          "avatar": "user.jpg",
+          "name": "John Doe",
+          "role": "Warehouse Manager"
+        }
+      ]
+    }
+  ],
+  "design-tokens": {
+    "colors": {
+      "primaryBg": "#0F172A",
+      "surface": "#0B1020",
+      "accent": "#FF6B6B",
+      "success": "#A3E635",
+      "muted": "#94A3B8",
+      "danger": "#F43F5E",
+      "text": "#FFFFFF",
+      "textSecondary": "#E6EEF8"
+    },
+    "spacing": {
+      "xs": 4,
+      "sm": 8,
+      "md": 16,
+      "lg": 24,
+      "xl": 32,
+      "2xl": 48
+    },
+    "borderRadius": {
+      "sm": 4,
+      "md": 8,
+      "lg": 12,
+      "xl": 16,
+      "2xl": 24
+    },
+    "shadows": {
+      "soft": "0 6px 18px rgba(2,6,23,0.7)",
+      "medium": "0 10px 30px rgba(2,6,23,0.8)"
+    },
+    "typography": {
+      "fontFamily": "Inter, sans-serif",
+      "fontSizes": {
+        "xs": 12,
+        "sm": 14,
+        "md": 16,
+        "lg": 18,
+        "xl": 20,
+        "2xl": 24,
+        "3xl": 32
+      }
+    }
+  }
+}
+

@@ -1,0 +1,1337 @@
+openapi: 3.0.3
+info:
+  title: StockMaster Inventory Management API
+  description: |
+    RESTful API for StockMaster Inventory Management System.
+    All endpoints require JWT authentication via Bearer token in Authorization header.
+    MongoDB is used as the database backend.
+  version: 1.0.0
+  contact:
+    name: StockMaster API Support
+    email: api@stockmaster.com
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+  - url: https://api.stockmaster.com/v1
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Products
+    description: Product management
+  - name: Stocks
+    description: Stock levels and adjustments
+  - name: Receipts
+    description: Incoming stock receipts
+  - name: Deliveries
+    description: Outgoing shipments
+  - name: Transfers
+    description: Internal warehouse transfers
+  - name: Adjustments
+    description: Stock adjustments (damage, shrinkage, corrections)
+  - name: Ledger
+    description: Immutable audit log of all stock movements
+  - name: Warehouses
+    description: Warehouse management
+  - name: Dashboard
+    description: Dashboard KPIs and analytics
+  - name: Users
+    description: User management
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          type: object
+          description: Additional error details
+
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: objectid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        role:
+          type: string
+          enum: [ADMIN, WAREHOUSE_MANAGER, STOCK_CLERK, VIEWER]
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Product:
+      type: object
+      required:
+        - sku
+        - name
+        - category
+        - unit
+      properties:
+        _id:
+          type: string
+          format: objectid
+        sku:
+          type: string
+          description: Unique SKU code
+        name:
+          type: string
+        category:
+          type: string
+        unit:
+          type: string
+          enum: [kg, pcs, L, m, box, pallet]
+        cost:
+          type: number
+          format: float
+        price:
+          type: number
+          format: float
+        reorderPoint:
+          type: number
+          format: float
+        variants:
+          type: array
+          items:
+            type: object
+        metadata:
+          type: object
+        imageUrls:
+          type: array
+          items:
+            type: string
+            format: uri
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Warehouse:
+      type: object
+      required:
+        - name
+        - code
+      properties:
+        _id:
+          type: string
+          format: objectid
+        name:
+          type: string
+        code:
+          type: string
+          description: Unique warehouse code
+        address:
+          type: string
+        contact:
+          type: string
+        timezone:
+          type: string
+        defaultDock:
+          type: string
+        currency:
+          type: string
+        settings:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Stock:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: objectid
+        productId:
+          type: string
+          format: objectid
+        warehouseId:
+          type: string
+          format: objectid
+        qty:
+          type: number
+          format: float
+        reserved:
+          type: number
+          format: float
+        version:
+          type: integer
+          description: Optimistic concurrency version
+        updatedAt:
+          type: string
+          format: date-time
+
+    Receipt:
+      type: object
+      required:
+        - supplier
+        - warehouseId
+        - lines
+      properties:
+        _id:
+          type: string
+          format: objectid
+        supplier:
+          type: string
+        reference:
+          type: string
+          description: PO reference number
+        warehouseId:
+          type: string
+          format: objectid
+        receivedBy:
+          type: string
+          format: objectid
+        status:
+          type: string
+          enum: [DRAFT, RECEIVED, CANCELED]
+        receivedAt:
+          type: string
+          format: date-time
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceiptLine'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ReceiptLine:
+      type: object
+      required:
+        - productId
+        - qty
+        - unitCost
+      properties:
+        productId:
+          type: string
+          format: objectid
+        qty:
+          type: number
+          format: float
+        unitCost:
+          type: number
+          format: float
+        unit:
+          type: string
+
+    Delivery:
+      type: object
+      required:
+        - customer
+        - warehouseId
+        - lines
+      properties:
+        _id:
+          type: string
+          format: objectid
+        customer:
+          type: string
+        shippingAddress:
+          type: string
+        warehouseId:
+          type: string
+          format: objectid
+        shippedBy:
+          type: string
+          format: objectid
+        status:
+          type: string
+          enum: [DRAFT, READY, SHIPPED, COMPLETED, CANCELED]
+        shippedAt:
+          type: string
+          format: date-time
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeliveryLine'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    DeliveryLine:
+      type: object
+      required:
+        - productId
+        - qty
+      properties:
+        productId:
+          type: string
+          format: objectid
+        qty:
+          type: number
+          format: float
+        unitPrice:
+          type: number
+          format: float
+        unit:
+          type: string
+
+    Transfer:
+      type: object
+      required:
+        - fromWarehouseId
+        - toWarehouseId
+        - lines
+      properties:
+        _id:
+          type: string
+          format: objectid
+        fromWarehouseId:
+          type: string
+          format: objectid
+        toWarehouseId:
+          type: string
+          format: objectid
+        initiatedBy:
+          type: string
+          format: objectid
+        status:
+          type: string
+          enum: [DRAFT, IN_TRANSIT, COMPLETED, CANCELED]
+        completedAt:
+          type: string
+          format: date-time
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferLine'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    TransferLine:
+      type: object
+      required:
+        - productId
+        - qty
+      properties:
+        productId:
+          type: string
+          format: objectid
+        qty:
+          type: number
+          format: float
+        unit:
+          type: string
+
+    Adjustment:
+      type: object
+      required:
+        - productId
+        - warehouseId
+        - adjustedQty
+        - reason
+      properties:
+        _id:
+          type: string
+          format: objectid
+        productId:
+          type: string
+          format: objectid
+        warehouseId:
+          type: string
+          format: objectid
+        adjustedQty:
+          type: number
+          format: float
+          description: Can be negative to reduce stock
+        reason:
+          type: string
+          enum: [DAMAGE, SHRINKAGE, COUNT_CORRECTION, OTHER]
+        note:
+          type: string
+        photoUrl:
+          type: string
+          format: uri
+        performedBy:
+          type: string
+          format: objectid
+        createdAt:
+          type: string
+          format: date-time
+
+    LedgerEntry:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: objectid
+        eventType:
+          type: string
+          enum: [RECEIPT, DELIVERY, TRANSFER_IN, TRANSFER_OUT, ADJUSTMENT]
+        refId:
+          type: string
+          format: objectid
+          description: Reference to receipt/delivery/transfer/adjustment
+        productId:
+          type: string
+          format: objectid
+        warehouseId:
+          type: string
+          format: objectid
+        beforeQty:
+          type: number
+          format: float
+        afterQty:
+          type: number
+          format: float
+        delta:
+          type: number
+          format: float
+        reason:
+          type: string
+        note:
+          type: string
+        performedBy:
+          type: string
+          format: objectid
+        timestamp:
+          type: string
+          format: date-time
+
+    DashboardKPIs:
+      type: object
+      properties:
+        totalProducts:
+          type: integer
+        totalStockValue:
+          type: number
+          format: float
+        lowStockCount:
+          type: integer
+        todaysReceipts:
+          type: integer
+        todaysDeliveries:
+          type: integer
+        warehousesOverview:
+          type: array
+          items:
+            type: object
+            properties:
+              warehouseId:
+                type: string
+                format: objectid
+              name:
+                type: string
+              totalValue:
+                type: number
+                format: float
+              productCount:
+                type: integer
+
+    PaginatedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+            limit:
+              type: integer
+            total:
+              type: integer
+            totalPages:
+              type: integer
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register new user (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - name
+                - role
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                name:
+                  type: string
+                role:
+                  type: string
+                  enum: [ADMIN, WAREHOUSE_MANAGER, STOCK_CLERK, VIEWER]
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /products:
+    get:
+      tags:
+        - Products
+      summary: List products
+      parameters:
+        - name: warehouse
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Search query
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+    post:
+      tags:
+        - Products
+      summary: Create product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Get product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectid
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+    put:
+      tags:
+        - Products
+      summary: Update product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+    delete:
+      tags:
+        - Products
+      summary: Delete product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectid
+      responses:
+        '204':
+          description: Product deleted
+        '404':
+          description: Product not found
+
+  /stocks:
+    get:
+      tags:
+        - Stocks
+      summary: Get stock levels
+      parameters:
+        - name: productId
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: warehouseId
+          in: query
+          schema:
+            type: string
+            format: objectid
+      responses:
+        '200':
+          description: Stock levels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Stock'
+
+  /stocks/adjust:
+    post:
+      tags:
+        - Stocks
+        - Adjustments
+      summary: Adjust stock quantity
+      description: |
+        Adjusts stock quantity and creates immutable ledger entry.
+        Example: 0 kg steel → stock –20 (count correction)
+        Example: 3 kg damaged → stock –3 (damage adjustment)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+                - warehouseId
+                - adjustedQty
+                - reason
+              properties:
+                productId:
+                  type: string
+                  format: objectid
+                warehouseId:
+                  type: string
+                  format: objectid
+                adjustedQty:
+                  type: number
+                  format: float
+                  description: Negative to reduce, positive to increase
+                reason:
+                  type: string
+                  enum: [DAMAGE, SHRINKAGE, COUNT_CORRECTION, OTHER]
+                note:
+                  type: string
+                photoUrl:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Stock adjusted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  adjustment:
+                    $ref: '#/components/schemas/Adjustment'
+                  ledgerEntry:
+                    $ref: '#/components/schemas/LedgerEntry'
+                  stock:
+                    $ref: '#/components/schemas/Stock'
+        '400':
+          description: Validation error or insufficient stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /receipts:
+    get:
+      tags:
+        - Receipts
+      summary: List receipts
+      parameters:
+        - name: warehouseId
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [DRAFT, RECEIVED, CANCELED]
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: List of receipts
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Receipt'
+    post:
+      tags:
+        - Receipts
+      summary: Create receipt
+      description: |
+        Creates receipt and updates stock levels atomically.
+        Creates ledger entries for each line item.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - supplier
+                - warehouseId
+                - lines
+              properties:
+                supplier:
+                  type: string
+                reference:
+                  type: string
+                warehouseId:
+                  type: string
+                  format: objectid
+                lines:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ReceiptLine'
+      responses:
+        '201':
+          description: Receipt created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /receipts/{id}:
+    get:
+      tags:
+        - Receipts
+      summary: Get receipt by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectid
+      responses:
+        '200':
+          description: Receipt details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+        '404':
+          description: Receipt not found
+
+  /deliveries:
+    get:
+      tags:
+        - Deliveries
+      summary: List deliveries
+      parameters:
+        - name: warehouseId
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [DRAFT, READY, SHIPPED, COMPLETED, CANCELED]
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: List of deliveries
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Delivery'
+    post:
+      tags:
+        - Deliveries
+      summary: Create delivery
+      description: |
+        Creates delivery and decrements stock levels atomically.
+        Creates ledger entries for each line item.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - customer
+                - warehouseId
+                - lines
+              properties:
+                customer:
+                  type: string
+                shippingAddress:
+                  type: string
+                warehouseId:
+                  type: string
+                  format: objectid
+                lines:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DeliveryLine'
+      responses:
+        '201':
+          description: Delivery created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+        '400':
+          description: Validation error or insufficient stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /deliveries/{id}:
+    get:
+      tags:
+        - Deliveries
+      summary: Get delivery by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectid
+      responses:
+        '200':
+          description: Delivery details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+        '404':
+          description: Delivery not found
+
+  /transfers:
+    get:
+      tags:
+        - Transfers
+      summary: List transfers
+      parameters:
+        - name: fromWarehouseId
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: toWarehouseId
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [DRAFT, IN_TRANSIT, COMPLETED, CANCELED]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: List of transfers
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Transfer'
+    post:
+      tags:
+        - Transfers
+      summary: Create transfer
+      description: |
+        Creates transfer and atomically updates both source and destination stocks.
+        Creates two ledger entries per line (TRANSFER_OUT and TRANSFER_IN).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fromWarehouseId
+                - toWarehouseId
+                - lines
+              properties:
+                fromWarehouseId:
+                  type: string
+                  format: objectid
+                toWarehouseId:
+                  type: string
+                  format: objectid
+                lines:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TransferLine'
+      responses:
+        '201':
+          description: Transfer created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '400':
+          description: Validation error or insufficient stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /transfers/{id}:
+    get:
+      tags:
+        - Transfers
+      summary: Get transfer by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectid
+      responses:
+        '200':
+          description: Transfer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '404':
+          description: Transfer not found
+
+  /adjustments:
+    get:
+      tags:
+        - Adjustments
+      summary: List adjustments
+      parameters:
+        - name: productId
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: warehouseId
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: reason
+          in: query
+          schema:
+            type: string
+            enum: [DAMAGE, SHRINKAGE, COUNT_CORRECTION, OTHER]
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: List of adjustments
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Adjustment'
+
+  /ledger:
+    get:
+      tags:
+        - Ledger
+      summary: Get move history ledger
+      description: Immutable audit log of all stock movements
+      parameters:
+        - name: productId
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: warehouseId
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: eventType
+          in: query
+          schema:
+            type: string
+            enum: [RECEIPT, DELIVERY, TRANSFER_IN, TRANSFER_OUT, ADJUSTMENT]
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Ledger entries
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LedgerEntry'
+
+  /warehouses:
+    get:
+      tags:
+        - Warehouses
+      summary: List warehouses
+      responses:
+        '200':
+          description: List of warehouses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Warehouse'
+    post:
+      tags:
+        - Warehouses
+      summary: Create warehouse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Warehouse'
+      responses:
+        '201':
+          description: Warehouse created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
+
+  /warehouses/{id}:
+    get:
+      tags:
+        - Warehouses
+      summary: Get warehouse by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectid
+      responses:
+        '200':
+          description: Warehouse details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
+    put:
+      tags:
+        - Warehouses
+      summary: Update warehouse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Warehouse'
+      responses:
+        '200':
+          description: Warehouse updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
+
+  /dashboard:
+    get:
+      tags:
+        - Dashboard
+      summary: Get dashboard KPIs
+      parameters:
+        - name: warehouseId
+          in: query
+          schema:
+            type: string
+            format: objectid
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Dashboard KPIs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardKPIs'
+
