@@ -63,10 +63,6 @@ pnpm install
 
 You have two options for MongoDB to access the database.
 
-Add this to the .env.local file you have created:
-MONGODB_URI=mongodb+srv://aayu:aayu2417@cluster0.drl5bja.mongodb.net/?appName=Cluster0
-MONGODB_DB_NAME=inventory
-
 ### 4. Configure Environment Variables
 
 Create a `.env.local` file in the root directory of the project:
